@@ -1,4 +1,4 @@
-const CACHE='shiti-v1.0.0';
+const CACHE='shiti-v1.0.1';
 const ASSETS=['./','./index.html','./style.css','./app.js','./core.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));});
 self.addEventListener('activate',e=>{e.waitUntil((async()=>{for(const key of await caches.keys())if(key.startsWith('shiti-')&&key!==CACHE)await caches.delete(key);await self.clients.claim();})());});

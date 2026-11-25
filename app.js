@@ -6,13 +6,13 @@ let data=emptyData(), storageError='', numPage=0, installPrompt=null;
 try {const raw=localStorage.getItem(KEY); if(raw) data=normalize(JSON.parse(raw));} catch {storageError='本机数据读取失败。请先在“备份与迁移”导出原始数据，再恢复备份；当前已暂停写入。';}
 let draft={...data.last}, page='', toastTimer;
 function toast(message){$('toast').textContent=message;$('toast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').style.display='none',4500);}
-function commit(next){
-  if(storageError) throw new Error(storageError);
+function commit(next,recover=false){
+  if(storageError&&!recover) throw new Error(storageError);
   try {localStorage.setItem(KEY,JSON.stringify(next));} catch {throw new Error('保存失败，本机空间不足或存储被禁用。请导出备份后再试。');}
-  data=next; updateBadge();
+  data=next; storageError=''; updateBadge();
 }
 function mutate(fn){const copy=structuredClone(data);const result=fn(copy);commit(copy);return result;}
-function backup(){localStorage.setItem(BACKUP,JSON.stringify(data));}
+function backup(){localStorage.setItem(BACKUP,storageError?(localStorage.getItem(KEY)||'{}'):JSON.stringify(data));}
 const bookName=id=>data.books.find(b=>b.id===id)?.name || '未找到图书';
 const due=()=>data.probs.filter(p=>p.status==='active'&&p.next&&p.next<=today()).sort((a,b)=>a.next.localeCompare(b.next));
 const options=(books,chosen,blank='请选择图书')=>`<option value="">${blank}</option>`+books.map(b=>`<option value="${esc(b.id)}" ${b.id===chosen?'selected':''}>${esc(b.name)}</option>`).join('');
@@ -79,7 +79,7 @@ function showData(){
  $('exportData').onclick=()=>{if(storageError)download(localStorage.getItem(KEY)||'{}',`拾题-原始数据-${today()}.json`);else download(data,`拾题备份-${today()}.json`);};
  $('previousBackup').onclick=()=>{const raw=localStorage.getItem(BACKUP);if(!raw)return toast('还没有操作前备份。');download(raw,`拾题-操作前备份-${today()}.json`);};
  $('installApp').onclick=async()=>{if(installPrompt){await installPrompt.prompt();installPrompt=null;}else toast('在浏览器菜单中选择“安装应用”或“添加到主屏幕”；iPhone 请用 Safari。');};
- $('importFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>20*1024*1024)throw new Error('备份文件超过 20 MB，请先检查文件。');const incoming=normalize(JSON.parse(await file.text()));openDialog(`<h2>确认导入备份</h2><p>文件包含 ${incoming.books.length} 本书、${incoming.probs.length} 道错题、${incoming.probs.reduce((n,p)=>n+p.hist.length,0)} 条复习记录。</p><p class="hint">合并到现有数据，重复且内容完全一致的 ID 跳过。操作前会保存一份本机备份。</p><button id="confirmImport">合并导入</button>`);$('confirmImport').onclick=()=>{try{if(storageError)throw new Error(storageError);const result=mergeData(data,incoming);backup();commit(result.data);draft={...data.last};$('detail').close();render();toast(`导入完成，新增 ${result.added} 道，跳过 ${result.skipped} 道完全相同的题目。`);}catch(e){toast(e.message);}};}catch(e){toast(`导入失败：${e.message}`);}finally{e.target.value='';}};
+ $('importFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>20*1024*1024)throw new Error('备份文件超过 20 MB，请先检查文件。');const incoming=normalize(JSON.parse(await file.text()));openDialog(`<h2>确认导入备份</h2><p>文件包含 ${incoming.books.length} 本书、${incoming.probs.length} 道错题、${incoming.probs.reduce((n,p)=>n+p.hist.length,0)} 条复习记录。</p><p class="hint">合并到现有数据，重复且内容完全一致的 ID 跳过。操作前会保存一份本机备份。</p><button id="confirmImport">合并导入</button>`);$('confirmImport').onclick=()=>{try{const result=mergeData(data,incoming);backup();commit(result.data,true);draft={...data.last};$('detail').close();render();toast(`导入完成，新增 ${result.added} 道，跳过 ${result.skipped} 道完全相同的题目。`);}catch(e){toast(e.message);}};}catch(e){toast(`导入失败：${e.message}`);}finally{e.target.value='';}};
  $('relocateForm').onsubmit=e=>{e.preventDefault();const source=$('sourceBook').value,target=$('targetBook').value,pos=collect('move-');try{const preview=structuredClone(data);const count=relocateBook(preview,source,target,pos);openDialog(`<h2>确认整理 ${count} 道题</h2><p>${esc(bookName(source))}</p><p>归入：${esc(bookName(target))}<br>${esc([pos.chapter,pos.section,pos.exercise?`第${pos.exercise}大题`:'',pos.subgroup].filter(Boolean).join(' / '))}</p><p class="hint">原书目将归并。小题号、复习历史和计划不变。同位置记录会同时保留，可在书架核对。</p><button id="confirmMove">确认归并并备份</button>`);$('confirmMove').onclick=()=>{try{backup();mutate(d=>relocateBook(d,source,target,pos));draft={...data.last};$('detail').close();showData();toast(`已整理 ${count} 道题。`);}catch(e){toast(e.message);}};}catch(e){toast(e.message);}};
 }
 function render(){page=location.hash.slice(1)||'add';if(!['add','review','library','data'].includes(page))page='add';document.querySelectorAll('[data-nav]').forEach(a=>{a.classList.toggle('active',a.dataset.nav===page);a.setAttribute('aria-current',a.dataset.nav===page?'page':'false');});({add:showAdd,review:showReview,library:showLibrary,data:showData})[page]();if(storageError)$('main').insertAdjacentHTML('afterbegin',`<p class="warning" role="alert">${esc(storageError)}</p>`);updateBadge();}
