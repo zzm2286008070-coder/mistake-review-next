@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>更新错题回顾</title>
+<style>body{font:16px/1.7 system-ui,sans-serif;background:#eef3ff;color:#172033;margin:0;padding:48px 24px}main{max-width:420px;margin:auto;background:white;border-radius:16px;padding:28px}h1{font-size:23px}button,a{font:inherit}button{background:#4f7fe5;color:white;border:0;border-radius:8px;padding:12px 20px;cursor:pointer}button:disabled{opacity:.6}a{color:#365fab}#status{min-height:3.4em}</style></head>
+<body><main><h1>更新错题回顾</h1><p>载入最新版本，保留本机错题与复习记录。</p><p id="status" role="status">更新前请先保存其他窗口正在录入的内容。</p><button id="update">检查并载入新版</button><p><a href="./#stats">返回应用</a></p></main>
+<script>
+ const button=document.getElementById('update'),status=document.getElementById('status');
+ button.onclick=async()=>{
+  button.disabled=true;status.textContent='正在检查更新…';let timer;
+  try{
+   if(!('serviceWorker' in navigator))throw new Error('当前浏览器不支持离线更新，请直接返回应用。');
+   const registration=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
+   await registration.update();
+   if(registration.installing)await new Promise((resolve,reject)=>{
+    const worker=registration.installing;
+    const check=()=>{if(worker.state==='installed'||worker.state==='activated'){clearTimeout(timer);resolve();}else if(worker.state==='redundant'){clearTimeout(timer);reject(new Error('新版下载失败，请检查网络后重试。'));}};
+    worker.addEventListener('statechange',check);timer=setTimeout(()=>reject(new Error('更新超时，请重试。')),30000);check();
+   });
+   if(registration.waiting){
+    status.textContent='新版已下载，正在载入…';
+    navigator.serviceWorker.addEventListener('controllerchange',()=>location.replace('./#stats'),{once:true});
+    registration.waiting.postMessage({type:'ACTIVATE_UPDATE'});
+    timer=setTimeout(()=>{status.textContent='请关闭其他应用窗口后，点击返回应用。';button.disabled=false;},15000);
+   }else location.replace('./#stats');
+  }catch(error){clearTimeout(timer);status.textContent=error.message;button.disabled=false;}
+ };
+</script></body></html>

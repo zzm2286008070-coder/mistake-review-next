@@ -1,5 +1,6 @@
-const CACHE='mistake-next-v2.2.2';
-const ASSETS=['./','./index.html','./style.css','./app.js','./core.js','./analytics.js','./appearance.js','./cloud.js','./manifest.webmanifest','./star-icon.png','./star-icon-192.png','./star-icon-512.png'];
+const CACHE='mistake-next-v2.2.3';
+const ASSETS=['./','./index.html','./style.css','./app.js','./core.js','./analytics.js','./appearance.js','./color-controls.js','./cloud.js','./manifest.webmanifest','./star-icon.png','./star-icon-192.png','./star-icon-512.png'];
+self.addEventListener('message',event=>{if(event.data?.type==='ACTIVATE_UPDATE')event.waitUntil(self.skipWaiting());});
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));});
 self.addEventListener('activate',e=>{e.waitUntil((async()=>{for(const key of await caches.keys())if((key.startsWith('shiti-')||key.startsWith('mistake-next-'))&&key!==CACHE)await caches.delete(key);await self.clients.claim();})());});
 self.addEventListener('fetch',e=>{
