@@ -13,7 +13,12 @@ export class GistClient {
  }
  async request(method,path,body){
   const response=await this.fetcher('https://api.github.com/gists'+path,{method,signal:AbortSignal.timeout(15000),headers:{Accept:'application/vnd.github+json',Authorization:`Bearer ${this.token}`,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})});
-  if(!response.ok){if(response.status===401)throw new Error('GitHub 登录凭据无效或已过期。');if(response.status===403)throw new Error('GitHub 拒绝访问，请检查 Gist 权限或 API 频率限制。');if(response.status===404)throw new Error('找不到这个 Gist，或当前账号无权读取。');throw new Error(`云端请求失败（${response.status}）。`);}
+  if(!response.ok){
+   const messages={401:'GitHub 登录凭据无效或已过期。',403:'GitHub 拒绝访问，请检查 Gist 权限或 API 频率限制。',404:'找不到这个 Gist，或当前账号无权读取。'};
+   const error=new Error(messages[response.status]||`云端请求失败（${response.status}）。`);
+   error.status=response.status;
+   throw error;
+  }
   return response.json();
  }
  get(id){return this.request('GET','/'+gistId(id));}
