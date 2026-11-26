@@ -26,3 +26,4 @@ main>h1,main>.subtitle,.review-book{color:var(--page-ink,var(--ink))}main>.subti
 .review-quote{text-align:center;padding-block:clamp(2.5rem,8vw,5rem)}
 .review-quote p{margin:0;font:600 clamp(1.15rem,3vw,1.6rem)/1.9 "Songti SC","SimSun",serif;color:var(--ink);text-wrap:balance}
 @media(max-width:600px){.library-actions{flex-direction:column;gap:0}}
+.book-card{-webkit-touch-callout:none}.book-card .book-title{-webkit-user-select:none;user-select:none;cursor:default;border-radius:6px}.book-menu{margin:24px 0 14px}.book-menu button{width:100%;justify-content:flex-start}

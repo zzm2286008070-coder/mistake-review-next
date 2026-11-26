@@ -1,5 +1,5 @@
-const CACHE='mistake-next-v2.2.9';
-const ASSETS=['./','./index.html','./style.css','./app.js','./core.js','./analytics.js','./appearance.js','./color-controls.js','./cloud.js','./calendar.js','./manifest.webmanifest','./star-icon.png','./star-icon-192.png','./star-icon-512.png'];
+const CACHE='mistake-next-v2.2.10';
+const ASSETS=['./','./index.html','./style.css','./app.js','./core.js','./analytics.js','./appearance.js','./color-controls.js','./cloud.js','./calendar.js','./book-actions.js','./manifest.webmanifest','./star-icon.png','./star-icon-192.png','./star-icon-512.png'];
 self.addEventListener('message',event=>{if(event.data?.type==='ACTIVATE_UPDATE')event.waitUntil(self.skipWaiting());});
 // Version every precache request: a new worker must not reuse stale HTTP assets.
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS.map(path=>`${path}?v=${CACHE}`))));});
