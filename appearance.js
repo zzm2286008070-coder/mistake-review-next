@@ -1,10 +1,10 @@
 export const THEMES = [
-  {id:'blue',name:'晴空蓝',color:'#4f7fe5'},
-  {id:'purple',name:'鸢尾紫',color:'#8056d9'},
-  {id:'rose',name:'蔷薇粉',color:'#c65179'},
-  {id:'orange',name:'暖阳橙',color:'#bc651f'},
-  {id:'teal',name:'湖水青',color:'#167d83'},
-  {id:'slate',name:'石墨灰',color:'#526179'}
+  {id:'blue',name:'蓝色',color:'#4f7fe5'},
+  {id:'purple',name:'紫色',color:'#8056d9'},
+  {id:'rose',name:'粉色',color:'#c65179'},
+  {id:'orange',name:'橙色',color:'#bc651f'},
+  {id:'teal',name:'青色',color:'#167d83'},
+  {id:'slate',name:'灰色',color:'#526179'}
 ];
 export function colorSettings(color='#4f7fe5',dark=false){
   if(!/^#[0-9a-f]{6}$/i.test(color))throw new Error('请选择有效的六位主题颜色。');

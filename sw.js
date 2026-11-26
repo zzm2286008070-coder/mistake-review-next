@@ -1,4 +1,4 @@
-const CACHE='mistake-next-v2.0.0';
+const CACHE='mistake-next-v2.1.0';
 const ASSETS=['./','./index.html','./style.css','./app.js','./core.js','./analytics.js','./appearance.js','./cloud.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));});
 self.addEventListener('activate',e=>{e.waitUntil((async()=>{for(const key of await caches.keys())if((key.startsWith('shiti-')||key.startsWith('mistake-next-'))&&key!==CACHE)await caches.delete(key);await self.clients.claim();})());});
