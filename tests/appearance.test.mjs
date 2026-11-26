@@ -1,7 +1,29 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {appearanceSettings,validColor,THEMES} from '../appearance.js';
+import {appearanceSettings,validColor,THEMES,selectTheme} from '../appearance.js';
+
+test('custom themes change the following background in both light and dark modes',()=>{
+ for(const dark of [false,true]){
+  const red=appearanceSettings({color:'#ee2233',dark}),green=appearanceSettings({color:'#22bb44',dark});
+  assert.notEqual(red['--paper'],green['--paper']);
+  const channels=color=>[1,3,5].map(i=>parseInt(color.slice(i,i+2),16));
+  const [r,g,b]=channels(red['--paper']);assert.ok(r>g&&r>b);
+  const [gr,gg,gb]=channels(green['--paper']);assert.ok(gg>gr&&gg>gb);
+  assert.equal(appearanceSettings(JSON.parse(JSON.stringify({color:'#ee2233',dark})))['--paper'],red['--paper']);
+ }
+});
+
+test('explicit theme selection resumes background following even after manual backgrounds',()=>{
+ const old={color:'#4f7fe5',dark:false,backgroundLight:'#ffe9b5',backgroundDark:'#271b39'};
+ for(const color of ['#EE2233',THEMES[1].color]){
+  const next=selectTheme(old,color);
+  assert.equal(next.backgroundLight,null);assert.equal(next.backgroundDark,null);
+  assert.equal(next.color,color.toLowerCase());
+  for(const dark of [false,true])assert.equal(appearanceSettings({...next,dark})['--paper'],appearanceSettings({color,dark})['--paper']);
+ }
+ assert.equal(old.backgroundLight,'#ffe9b5');
+});
 test('old theme preferences still work and preset themes color the page background',()=>{
  assert.equal(appearanceSettings({color:'#4f7fe5',dark:false})['--paper'],'#f5f3f0');
  assert.equal(appearanceSettings({color:'#8056d9',dark:false})['--paper'],THEMES.find(t=>t.id==='purple').background);
