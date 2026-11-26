@@ -133,7 +133,10 @@ function bindTheme(){
  if($('customColor'))$('customColor').oninput=e=>{appearance.color=e.target.value;save();};
  if($('darkMode'))$('darkMode').onchange=e=>{appearance.dark=e.target.checked;save();};
  if($('pageBackground'))$('pageBackground').oninput=e=>setBackground(e.target.value);
- if($('backgroundHex'))$('backgroundHex').onchange=e=>setBackground(e.target.value.trim());
+ if($('backgroundHex')){
+  $('backgroundHex').oninput=e=>{const value=e.target.value.trim();if(validColor(value))setBackground(value);};
+  $('backgroundHex').onchange=e=>setBackground(e.target.value.trim());
+ }
  if($('resetBackground'))$('resetBackground').onclick=()=>{appearance[appearance.dark?'backgroundDark':'backgroundLight']=null;save();};
  drawBackgrounds();
 }
