@@ -5,7 +5,12 @@ export function gistId(value){
  if(!/^[0-9a-f]{5,64}$/i.test(id))throw new Error('请填写有效的 Gist ID。');return id;
 }
 export class GistClient {
- constructor(token,fetcher=globalThis.fetch){if(!token?.trim())throw new Error('请在本页输入 GitHub Gist Token，不要发到聊天中。');this.token=token.trim();this.fetcher=fetcher;}
+ constructor(token, fetcher = globalThis.fetch) {
+  if (!token?.trim()) throw new Error('请在本页输入 GitHub Gist Token，不要发到聊天中。');
+  this.token = token.trim();
+  // WebKit checks the receiver when calling the native Window.fetch.
+  this.fetcher = fetcher.bind(globalThis);
+ }
  async request(method,path,body){
   const response=await this.fetcher('https://api.github.com/gists'+path,{method,signal:AbortSignal.timeout(15000),headers:{Accept:'application/vnd.github+json',Authorization:`Bearer ${this.token}`,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})});
   if(!response.ok){if(response.status===401)throw new Error('GitHub 登录凭据无效或已过期。');if(response.status===403)throw new Error('GitHub 拒绝访问，请检查 Gist 权限或 API 频率限制。');if(response.status===404)throw new Error('找不到这个 Gist，或当前账号无权读取。');throw new Error(`云端请求失败（${response.status}）。`);}
