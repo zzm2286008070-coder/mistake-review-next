@@ -1,1 +1,25 @@
-{"id":"./","name":"错题回顾","short_name":"错题回顾","lang":"zh-CN","start_url":"./","scope":"./","display":"standalone","background_color":"#f5f3f0","theme_color":"#1e293b","icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}]}
+{
+  "id": "./",
+  "name": "错题回顾",
+  "short_name": "错题回顾",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f3f0",
+  "theme_color": "#1e293b",
+  "icons": [
+    {
+      "src": "star-icon-192.png?v=3",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "star-icon-512.png?v=3",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

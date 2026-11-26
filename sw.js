@@ -1,5 +1,5 @@
-const CACHE='mistake-next-v2.1.0';
-const ASSETS=['./','./index.html','./style.css','./app.js','./core.js','./analytics.js','./appearance.js','./cloud.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
+const CACHE='mistake-next-v2.2.0';
+const ASSETS=['./','./index.html','./style.css','./app.js','./core.js','./analytics.js','./appearance.js','./cloud.js','./manifest.webmanifest','./star-icon.png','./star-icon-192.png','./star-icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));});
 self.addEventListener('activate',e=>{e.waitUntil((async()=>{for(const key of await caches.keys())if((key.startsWith('shiti-')||key.startsWith('mistake-next-'))&&key!==CACHE)await caches.delete(key);await self.clients.claim();})());});
 self.addEventListener('fetch',e=>{
@@ -14,7 +14,7 @@ self.addEventListener('fetch',e=>{
 self.addEventListener('push',event=>event.waitUntil((async()=>{
  let data={};try{data=event.data?.json()||{};}catch{}
  if('setAppBadge' in navigator)try{const n=Number(data.badge)||0;if(n>0)await navigator.setAppBadge(n);else await navigator.clearAppBadge();}catch{}
- await self.registration.showNotification(data.title||'错题回顾',{body:data.body||'该复习了。',icon:'icon-192.png',badge:'icon-192.png',tag:'review-next-reminder',data:{url:data.url||'./#review'}});
+ await self.registration.showNotification(data.title||'错题回顾',{body:data.body||'该复习了。',icon:'star-icon-192.png',badge:'star-icon-192.png',tag:'review-next-reminder',data:{url:data.url||'./#review'}});
 })()));
 self.addEventListener('notificationclick',event=>{event.notification.close();event.waitUntil((async()=>{
  let url=new URL('./#review',self.registration.scope);

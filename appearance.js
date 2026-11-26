@@ -1,11 +1,26 @@
 export const THEMES = [
-  {id:'blue',name:'蓝色',color:'#4f7fe5'},
-  {id:'purple',name:'紫色',color:'#8056d9'},
-  {id:'rose',name:'粉色',color:'#c65179'},
-  {id:'orange',name:'橙色',color:'#bc651f'},
-  {id:'teal',name:'青色',color:'#167d83'},
-  {id:'slate',name:'灰色',color:'#526179'}
+  {id:'blue',name:'蓝色',color:'#4f7fe5',background:'#f5f3f0'},
+  {id:'purple',name:'紫色',color:'#8056d9',background:'#f2eefb'},
+  {id:'rose',name:'粉色',color:'#c65179',background:'#fff0f4'},
+  {id:'orange',name:'橙色',color:'#bc651f',background:'#fff4e8'},
+  {id:'teal',name:'青色',color:'#167d83',background:'#eaf5f4'},
+  {id:'slate',name:'灰色',color:'#526179',background:'#f0f2f5'}
 ];
+export const BACKGROUNDS = {
+ light:[{name:'暖灰',color:'#f5f3f0'},{name:'奶油',color:'#fff4db'},{name:'浅蓝',color:'#eaf2ff'},{name:'淡紫',color:'#f1e9ff'},{name:'浅粉',color:'#ffedf3'},{name:'浅绿',color:'#eaf5ec'}],
+ dark:[{name:'深蓝',color:'#131a25'},{name:'深紫',color:'#261d32'},{name:'深绿',color:'#142c26'},{name:'深灰',color:'#20242b'}]
+};
+export const validColor = value => typeof value==='string' && /^#[0-9a-f]{6}$/i.test(value);
+function luminance(color){return [1,3,5].map(i=>parseInt(color.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((a,v,i)=>a+v*[.2126,.7152,.0722][i],0);}
+export function appearanceSettings(preferences={}){
+ const dark=preferences.dark===true;
+ const accent=validColor(preferences.color)?preferences.color:'#4f7fe5';
+ const custom=dark?preferences.backgroundDark:preferences.backgroundLight;
+ const background=validColor(custom)?custom:(dark?'#131a25':THEMES.find(t=>t.color.toLowerCase()===accent.toLowerCase())?.background||'#f5f3f0');
+ const l=luminance(background),ink='#172033';
+ const darkContrast=(l+.05)/(luminance(ink)+.05),lightContrast=1.05/(l+.05);
+ return {...colorSettings(accent,dark),'--paper':background,'--page-ink':lightContrast>darkContrast?'#ffffff':ink};
+}
 export function colorSettings(color='#4f7fe5',dark=false){
   if(!/^#[0-9a-f]{6}$/i.test(color))throw new Error('请选择有效的六位主题颜色。');
   const rgb=[1,3,5].map(i=>parseInt(color.slice(i,i+2),16));
