@@ -1,4 +1,4 @@
-const CACHE='mistake-next-v2.2.10';
+const CACHE='mistake-next-v2.2.11';
 const ASSETS=['./','./index.html','./style.css','./app.js','./core.js','./analytics.js','./appearance.js','./color-controls.js','./cloud.js','./calendar.js','./book-actions.js','./manifest.webmanifest','./star-icon.png','./star-icon-192.png','./star-icon-512.png'];
 self.addEventListener('message',event=>{if(event.data?.type==='ACTIVATE_UPDATE')event.waitUntil(self.skipWaiting());});
 // Version every precache request: a new worker must not reuse stale HTTP assets.

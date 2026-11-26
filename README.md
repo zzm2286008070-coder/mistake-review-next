@@ -19,7 +19,7 @@
 
 兼容原项目 `wr_v3` 导出的 `{books, probs}` JSON。保留题目 ID、number、level、next、status、hist、created 和其他原字段；归并额外保存 `legacyLocation`。同 ID 且内容不同的导入记录保留为两条，不覆盖历史。不猜测旧书名结构；用户确认后归并。每次导入、归并或删除题目前保存一份本机操作前备份，可下载。该快照只有最近一次，长期备份请自行导出保存。
 
-不同网址、浏览器和设备的数据不会自动同步；换设备需导出再导入。本项目使用独立 localStorage 键 `mistake_review_next_v4`，不修改旧站的 `wr_v3`，不读取旧站的 GitHub Token。新版支持手动 Gist 云同步（使用独立文件名），Token 仅在当前会话保存。后台推送收发代码已提供，须按 [PUSH_SETUP.md](PUSH_SETUP.md) 配置 Actions Secrets 与设备订阅后才能启用，默认未启用。
+不同网址、浏览器和设备的数据不会自动同步；换设备需导出再导入。本项目使用独立 localStorage 键 `mistake_review_next_v4`，不修改旧站的 `wr_v3`，不读取旧站的 GitHub Token。新版支持手动 Gist 云同步（使用独立文件名），Token 在本设备的浏览器中持久保存，点击“断开”清除。后台推送收发代码已提供，须按 [PUSH_SETUP.md](PUSH_SETUP.md) 配置 Actions Secrets 与设备订阅后才能启用，默认未启用。
 
 离线缓存首次联网访问后建立，浏览器清理站点数据或卸载应用可能丢失本机数据，建议定期导出。代码更新后关闭所有应用页面再打开，以启用等待中的新缓存。
 
