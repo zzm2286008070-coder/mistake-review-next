@@ -21,3 +21,8 @@
 main>h1,main>.subtitle,.review-book{color:var(--page-ink,var(--ink))}main>.subtitle,.review-book{opacity:.8}.review-progress>.row>.hint{color:var(--page-ink,var(--ink))}
 @media(max-width:760px){.background-controls{gap:8px}.background-controls button{font-size:13px;padding:9px 11px}.background-options{gap:7px}.background-swatch{font-size:12px}.settings-block .panel{padding:4px 0 18px}.app-header{padding-right:10px}.header-inner{display:block}.review-actions .success,.review-actions .failure{font-size:14px}}
 .custom-color .color-hex{width:120px;min-width:100px;max-width:150px;flex:1;font-family:monospace}.custom-color .checkbox{flex-basis:100%}
+.library-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:4px;flex-shrink:0}
+.library-actions .danger{color:var(--red)}
+.review-quote{text-align:center;padding-block:clamp(2.5rem,8vw,5rem)}
+.review-quote p{margin:0;font:600 clamp(1.15rem,3vw,1.6rem)/1.9 "Songti SC","SimSun",serif;color:var(--ink);text-wrap:balance}
+@media(max-width:600px){.library-actions{flex-direction:column;gap:0}}
